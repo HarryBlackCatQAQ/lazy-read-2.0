@@ -1,0 +1,87 @@
+server:
+  port: 8360
+
+
+eureka:
+  client:
+    serviceUrl:
+      #defaultZone: http://127.0.0.1:8888/eureka/
+      defaultZone: http://134.175.204.29:7900/eureka/,http://134.175.204.29:7901/eureka/,http://134.175.204.29:7902/eureka/
+
+  instance:
+    prefer-ip-address: true
+logging:
+  level:
+    com.netflix.discovery.shared.resolver.aws.ConfigClusterResolver: WARN
+
+
+spring:
+  application:
+    name: lazy-spring-cloud-provider-user
+  datasource:
+    hikari:
+      master:
+        driverClassName: com.mysql.jdbc.Driver
+        jdbc-url: jdbc:mysql://134.175.204.29:3701/lazyRead_cloud?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&useSSL=false
+        username: root
+        password: root
+        maximum-pool-size: 60
+        minimum-idle: 10
+        max-lifetime: 60010 #不能小于30秒，否则默认回到1800秒
+        validation-timeout: 3000
+        connection-timeout: 60000
+        idle-timeout: 60000
+        login-timeout: 5
+      slave:
+        driverClassName: com.mysql.jdbc.Driver
+        jdbc-url: jdbc:mysql://134.175.204.29:3702/lazyRead_cloud?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&useSSL=false
+        username: root
+        password: root
+        maximum-pool-size: 60
+        minimum-idle: 10
+        max-lifetime: 60010 #不能小于30秒，否则默认回到1800秒
+        validation-timeout: 3000
+        connection-timeout: 60000
+        idle-timeout: 60000
+        login-timeout: 5
+  redis:
+    cluster:
+      nodes: 134.175.204.29:7010,134.175.204.29:7011,134.175.204.29:7012,134.175.204.29:7013,134.175.204.29:7014,134.175.204.29:7015
+      max-redirects: 5
+    lettuce:
+      pool:
+        max-active: 8
+        max-wait: 1000
+        max-idle: 8
+        min-idle: 0
+      shutdown-timeout: 100
+    password: 123456
+    timeout: 100
+  cache:
+    redis:
+      time-to-live: 3600
+      use-key-prefix: true
+
+
+
+# 异步线程配置
+async:
+  executor:
+    thread:
+      # 配置核心线程数
+      core_pool_size: 8
+      # 配置最大线程数
+      max_pool_size: 20
+      # 配置队列大小
+      queue_capacity: 99999
+      # 配置线程池中的线程的名称前缀
+      name:
+        prefix: async-service-
+## 配置核心线程数
+#  async.executor.thread.core_pool_size = 8
+#  # 配置最大线程数
+#  async.executor.thread.max_pool_size = 20
+#  # 配置队列大小
+#  async.executor.thread.queue_capacity = 99999
+#  # 配置线程池中的线程的名称前缀
+#  async.executor.thread.name.prefix = async-service-

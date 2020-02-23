@@ -1,0 +1,68 @@
+server:
+  port: 8300
+spring:
+  application:
+    name: lazy-spring-cloud-gateway
+  cloud:
+    gateway:
+      routes:
+      - id: lazy-spring-cloud-customer-book
+        uri: lb://lazy-spring-cloud-customer-book
+        predicates:
+          - Path=/book/**
+      - id: lazy-spring-cloud-customer-user
+        uri: lb://lazy-spring-cloud-customer-user
+        predicates:
+          - Path=/user/**
+#        filters:
+#          - Auth=true # 输入过滤器类的名称前缀
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      enabled: true
+  redis:
+    cluster:
+      nodes: 134.175.204.29:7010,134.175.204.29:7011,134.175.204.29:7012,134.175.204.29:7013,134.175.204.29:7014,134.175.204.29:7015
+      max-redirects: 3
+    lettuce:
+      pool:
+        max-active: 8
+        max-wait: 1000
+        max-idle: 8
+        min-idle: 0
+      shutdown-timeout: 100
+    password: 123456
+    timeout: 100
+
+eureka:
+  client:
+    serviceUrl:
+      #defaultZone: http://127.0.0.1:8888/eureka/
+      defaultZone: http://134.175.204.29:7900/eureka/,http://134.175.204.29:7901/eureka/,http://134.175.204.29:7902/eureka/
+
+ribbon:
+  eureka:
+    enabled: true
+
+LAZY-SPRING-CLOUD-CUSTOMER-BOOK:
+  ribbon:
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule #配置规则 随机
+    #NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RoundRobinRule #配置规则 轮询
+    #    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RetryRule #配置规则 重试
+    #    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.WeightedResponseTimeRule #配置规则 响应时间权重
+    #NFLoadBalancerRuleClassName: com.netflix.loadbalancer.BestAvailableRule #配置规则 最空闲连接策略
+    ConnectTimeout: 500 #请求连接超时时间
+  #    ReadTimeout: 1000 #请求处理的超时时间
+  #    OkToRetryOnAllOperations: true #对所有请求都进行重试
+  #    MaxAutoRetriesNextServer: 2 #切换实例的重试次数
+  #    MaxAutoRetries: 1 #对当前实例的重试次数
+
+LAZY-SPRING-CLOUD-CUSTOMER-USER:
+  ribbon:
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule
+    ConnectTimeout: 500
+
+logging:
+  level:
+    com.netflix.discovery.shared.resolver.aws.ConfigClusterResolver: WARN

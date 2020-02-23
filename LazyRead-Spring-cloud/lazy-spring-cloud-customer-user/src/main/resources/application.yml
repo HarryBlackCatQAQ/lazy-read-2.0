@@ -1,0 +1,53 @@
+eureka:
+  client:
+    serviceUrl:
+      #defaultZone: http://127.0.0.1:8888/eureka/
+      defaultZone: http://134.175.204.29:7900/eureka/,http://134.175.204.29:7901/eureka/,http://134.175.204.29:7902/eureka/
+  instance:
+    prefer-ip-address: true
+
+server:
+  port: 8330
+spring:
+  application:
+    name: lazy-spring-cloud-customer-user
+  main:
+    allow-bean-definition-overriding: true
+
+
+feign:
+  hystrix:
+    enabled: true
+  client:
+    config:
+      lazy-spring-cloud-provider-user:
+        connectTimeout: 12000
+        readTimeout: 12000
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 12000
+ribbon:
+  ReadTimeout: 5000
+  ConnectTimeout: 5000
+#lazy-spring-cloud-provider-user:
+#  ribbon:
+#    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule #配置规则 随机
+#    #NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RoundRobinRule #配置规则 轮询
+#    #    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RetryRule #配置规则 重试
+#    #    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.WeightedResponseTimeRule #配置规则 响应时间权重
+#    #NFLoadBalancerRuleClassName: com.netflix.loadbalancer.BestAvailableRule #配置规则 最空闲连接策略
+#    ConnectTimeout: 8000 #请求连接超时时间
+#    ReadTimeout: 8000 #请求处理的超时时间
+##    OkToRetryOnAllOperations: true #对所有请求都进行重试
+##    MaxAutoRetriesNextServer: 2 #切换实例的重试次数
+##    MaxAutoRetries: 1 #对当前实例的重试次数
+
+logging:
+  level:
+    com.netflix.discovery.shared.resolver.aws.ConfigClusterResolver: WARN
+
