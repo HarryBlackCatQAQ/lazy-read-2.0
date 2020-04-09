@@ -22,7 +22,7 @@ public class DynamicDataSourceHolder {
     }
 
     public static void setDBType(String str) {
-        log.info("数据源为" + str);
+//        log.info("数据源为" + str);
         contextHolder.set(str);
     }
 
